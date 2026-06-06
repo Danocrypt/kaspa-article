@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaspa: The Blockchain That Solved the Speed vs Security Tradeoff</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #00e5a0;
+    --accent2: #7c6dfa;
+    --accent3: #ff6b4a;
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --heading: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.85;
+    min-height: 100vh;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .article-header {
+    margin-bottom: 56px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 48px;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--heading);
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 64px;
+  }
+
+  .stat {
+    background: var(--surface);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Article body */
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--heading);
+    margin: 56px 0 20px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h2::before {
+    content: '';
+    width: 4px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent2);
+    margin: 32px 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  p {
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  strong {
+    color: var(--heading);
+    font-weight: 600;
+  }
+
+  em {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Pull quote */
+  .pullquote {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 28px;
+    margin: 40px 0;
+  }
+
+  .pullquote p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--heading);
+    margin: 0;
+  }
+
+  /* Code / mono blocks */
+  .mono-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 28px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+    overflow-x: auto;
+  }
+
+  .mono-block .hi { color: var(--accent); }
+  .mono-block .hi2 { color: var(--accent2); }
+  .mono-block .hi3 { color: var(--accent3); }
+  .mono-block .dim { color: #3a3a5a; }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  .compare-table th {
+    background: var(--surface);
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  .compare-table tr.highlight td {
+    background: rgba(0, 229, 160, 0.05);
+    color: var(--heading);
+  }
+
+  .compare-table tr.highlight td:first-child {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .badge-green { background: rgba(0,229,160,0.12); color: var(--accent); }
+  .badge-orange { background: rgba(255,107,74,0.12); color: var(--accent3); }
+  .badge-purple { background: rgba(124,109,250,0.12); color: var(--accent2); }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 36px 0;
+  }
+
+  .callout-green {
+    background: rgba(0, 229, 160, 0.06);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+  }
+
+  .callout-purple {
+    background: rgba(124, 109, 250, 0.06);
+    border: 1px solid rgba(124, 109, 250, 0.2);
+  }
+
+  .callout-orange {
+    background: rgba(255, 107, 74, 0.06);
+    border: 1px solid rgba(255, 107, 74, 0.2);
+  }
+
+  .callout-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+
+  .callout-green .callout-title { color: var(--accent); }
+  .callout-purple .callout-title { color: var(--accent2); }
+  .callout-orange .callout-title { color: var(--accent3); }
+
+  .callout p { margin: 0; font-size: 15px; }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 64px 0;
+    color: var(--border);
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* Footer */
+  .article-footer {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 16px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .container > * {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .article-header { animation-delay: 0.1s; }
+  .stats-bar { animation-delay: 0.2s; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .stats-bar { grid-template-columns: 1fr; }
+    .stat-value { font-size: 22px; }
+    .compare-table { font-size: 11px; }
+    .compare-table td, .compare-table th { padding: 10px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="article-header">
+    <div class="tag">Blockchain Deep Dive</div>
+    <h1>Kaspa: The Chain That Refused to <span>Choose</span> Between Speed and Security</h1>
+    <p class="subtitle">Bitcoin solved trust. But it trades speed for security. Kaspa is the first blockchain to prove you don't have to choose — and the math backs it up.</p>
+    <div class="meta">
+      <span>📄 Based on the PHANTOM GHOSTDAG paper — Sompolinsky, Wyborski & Zohar (2021)</span>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value">~400</div>
+      <div class="stat-label">Avg TPS (2026)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">5,584</div>
+      <div class="stat-label">Peak TPS recorded</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">&lt;1s</div>
+      <div class="stat-label">Block time</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2>Bitcoin's Dirty Secret</h2>
+
+  <p>Bitcoin is slow on purpose. One block every 10 minutes. 3–7 transactions per second. These aren't technical limitations that haven't been fixed yet — they're deliberate design choices made to keep the network secure.</p>
+
+  <p>Here's why. When a miner successfully creates a block, that block needs to travel across the entire internet and reach every other miner <strong>before</strong> the next block gets created. If two miners create blocks at nearly the same time, the network splits temporarily — two competing versions of the ledger exist until one "wins." The loser's block gets thrown away, wasted entirely.</p>
+
+  <p>Bitcoin's fix? Slow everything down so that by the time the next block is mined, the previous one has already spread everywhere. Problem contained. But throughput — the number of transactions you can process per second — gets strangled in the process.</p>
+
+  <div class="pullquote">
+    <p>"The security of Nakamoto Consensus goes to 0 as block rate increases. Speed the chain up, and it becomes trivially attackable."</p>
+  </div>
+
+  <p>This is called the <strong>security-scalability tradeoff</strong>. It's been the defining constraint of proof-of-work blockchains for 15 years. Every fast chain that came after Bitcoin either quietly accepted a weaker security model or fundamentally changed how consensus works.</p>
+
+  <p>Until Kaspa.</p>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 2 -->
+  <h2>What is a Block, Really?</h2>
+
+  <p>Before getting into what Kaspa does differently, it helps to understand what a block actually is.</p>
+
+  <p>Think of a block as a page in a public ledger. Each page contains a batch of recent transactions, a timestamp, and — critically — a fingerprint of the previous page. That fingerprint is called a <strong>hash</strong>.</p>
+
+  <div class="mono-block">
+<span class="hi">Block #890,412</span>
+<span class="dim">────────────────────────────────</span>
+Previous block hash : <span class="hi2">0000000000000abc...</span>
+Transactions        : <span class="hi">Alice → Bob  0.5 BTC</span>
+                      <span class="hi">Carol → Dave 1.2 BTC</span>
+                      <span class="hi">Eve → Frank  0.3 BTC</span>
+Nonce               : <span class="hi3">2,847,291,045</span>
+<span class="dim">────────────────────────────────</span>
+This block's hash   : <span class="hi2">0000000000000def...</span>
+  </div>
+
+  <p>Because every block contains the fingerprint of the block before it, you can't secretly alter an old transaction. Changing one block would change its hash, which would break the next block's reference to it, which would break every block after that — a chain reaction of invalidation stretching to the present day.</p>
+
+  <p>This is the elegance of blockchain security. History is tamper-evident by design.</p>
+
+  <h3>Mining — The Proof of Work Puzzle</h3>
+
+  <p>So who gets to add a new page? Anyone can write transactions down. The question is: who does the network trust?</p>
+
+  <p>Bitcoin's answer is elegant: <strong>the one who does the most work.</strong> Miners race to solve a computational puzzle — find a number (called a nonce) that, when combined with the block's contents and run through a cryptographic function, produces a result starting with enough zeros. There's no shortcut. It's pure brute force — billions of guesses per second until someone hits it.</p>
+
+  <div class="callout callout-purple">
+    <div class="callout-title">Why This Works as Security</div>
+    <p>The puzzle is <strong>hard to solve, trivial to verify</strong>. Solving might take billions of attempts. Checking takes one calculation. And because solving requires real electricity and hardware, attacks cost real money. Altering history means re-solving every puzzle from the altered block to the present — faster than the entire rest of the network. At Bitcoin's scale, practically impossible.</p>
+  </div>
+
+  <p>The winner gets newly created coins plus transaction fees. This is literally how new Bitcoin enters existence — and why it's called mining.</p>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 3 -->
+  <h2>The Block Race Problem</h2>
+
+  <p>Here's where things get interesting. Miners don't take turns — they race. And at any given moment, hundreds of thousands of machines worldwide are solving the same puzzle simultaneously.</p>
+
+  <p>When multiple miners solve it at nearly the same time, the network briefly holds competing valid blocks. In Bitcoin, only one survives — the one that gets built on first becomes the "real" chain and the rest become <strong>orphan blocks</strong>: valid work, valid transactions, simply discarded.</p>
+
+  <p>Each discarded block represents wasted electricity, wasted computational work, and wasted throughput. The transactions in it go back to the waiting pool and have to be picked up again by the next block.</p>
+
+  <div class="callout callout-orange">
+    <div class="callout-title">The Core Tension</div>
+    <p>The faster you mine, the more orphan blocks appear. More orphans means more of the honest network's computing power gets wasted — which means an attacker needs less power to outpace the honest network. Security degrades. So Bitcoin artificially throttles itself. One block every 10 minutes keeps orphan rates negligible. But it also limits throughput to ~7 transactions per second.</p>
+  </div>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 4 -->
+  <h2>Kaspa's Insight: Stop Throwing Blocks Away</h2>
+
+  <p>Kaspa's fundamental insight is almost obvious once you see it: <em>what if instead of discarding parallel blocks, you kept all of them?</em></p>
+
+  <p>Instead of blocks forming a single chain where only one block at each height survives, Kaspa organizes blocks into a <strong>blockDAG</strong> — a Directed Acyclic Graph. When a miner creates a new block, they reference <em>all</em> recently created blocks as predecessors, not just one.</p>
+
+  <div class="mono-block">
+<span class="dim">Bitcoin (Chain):</span>
+<span class="hi">Genesis</span> → <span class="hi">Block A</span> → <span class="hi">Block B</span> → <span class="hi">Block C</span> → ...
+<span class="dim">         (B and C created simultaneously: C gets discarded)</span>
+
+<span class="dim">Kaspa (DAG):</span>
+             <span class="hi">Block B</span> ↘
+<span class="hi">Genesis</span> → <span class="hi">Block A</span> →          → <span class="hi">Block D</span> → ...
+             <span class="hi">Block C</span> ↗
+<span class="dim">         (B and C both survive, both referenced by D)</span>
+  </div>
+
+  <p>Nothing is wasted. Every miner's work contributes to the ledger. No orphan blocks. The network can run at high block rates without throwing away honest computational work — and without the security degradation that comes from it.</p>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 5 -->
+  <h2>The New Problem — and How GHOSTDAG Solves It</h2>
+
+  <p>Keeping all blocks creates a new challenge: if you have dozens of parallel blocks containing overlapping transactions, how does the entire network agree on which transactions are valid? You need a consistent order — a way for every node on earth to independently look at the same DAG and reach the same conclusions.</p>
+
+  <p>This is what the <strong>GHOSTDAG protocol</strong> solves.</p>
+
+  <h3>The Key Insight: Honest Miners Leave a Fingerprint</h3>
+
+  <p>Honest miners immediately broadcast their blocks to everyone. So honest blocks tend to reference each other — they're well-connected in the DAG. Attacker blocks, by contrast, are withheld or created in isolation — they sit alone with few connections.</p>
+
+  <p>GHOSTDAG identifies the largest <strong>"well-connected cluster"</strong> of blocks — called <strong>blue blocks</strong> — which represent honest mining. Isolated outliers become <strong>red blocks</strong>, indicating likely attackers.</p>
+
+  <div class="callout callout-green">
+    <div class="callout-title">The Ordering Rule</div>
+    <p>Once blocks are coloured, GHOSTDAG creates a strict linear order: blue blocks first (in topological sequence), red blocks inserted later but not ignored entirely. Then it reads through every transaction in that order, checkmarking each one. If a transaction appears again in a later block — whether an honest duplicate or an attempted double-spend — it gets silently skipped. Already recorded. First valid occurrence wins.</p>
+  </div>
+
+  <p>Crucially, this same order is deterministically computed by every node independently. No communication needed. Every node on earth runs the same algorithm on the same DAG and arrives at identical conclusions about which transactions are valid. That's the consensus.</p>
+
+  <h3>The Parameter k</h3>
+
+  <p>GHOSTDAG has one key dial: <strong>k</strong>. It represents how many blocks can legitimately be created in parallel during normal network propagation delay. Higher throughput means more parallel blocks, which means k needs to be larger. The tradeoff is that higher k means slightly slower confirmation times — but crucially, <em>not weaker security</em>. Setting k = 0 makes Kaspa behave identically to Bitcoin.</p>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 6 -->
+  <h2>Real World Numbers</h2>
+
+  <p>This isn't theoretical. Kaspa is a live network. The GHOSTDAG paper itself tested 458,557 real transactions on the Kaspa network with the following confirmation results:</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Wait Time</th>
+        <th>% of Transactions Confirmed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1 second</td><td>5.3%</td></tr>
+      <tr><td>2 seconds</td><td>27.8%</td></tr>
+      <tr><td>5 seconds</td><td>59.3%</td></tr>
+      <tr><td>30 seconds</td><td>80.7%</td></tr>
+      <tr><td>2 minutes</td><td>92.2%</td></tr>
+      <tr><td>10 minutes</td><td>99.9%</td></tr>
+    </tbody>
+  </table>
+
+  <p>For context, Bitcoin's 10 minute block time means a single confirmation takes 10 minutes at minimum. Most merchants wait for 6 confirmations — that's an hour.</p>
+
+  <p>More recently, Kaspa's <strong>Crescendo upgrade</strong> pushed block production to 10 blocks per second (up from 1). On September 29, 2025, the network processed approximately 60 million transactions in a single day — around 680 TPS sustained. The recorded peak hit 5,584 TPS. Average transaction fees: ~$0.00001. No gas wars. No fee spikes.</p>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 7 -->
+  <h2>How Kaspa Stacks Up</h2>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Chain</th>
+        <th>Typical TPS</th>
+        <th>Block Time</th>
+        <th>Security Model</th>
+        <th>Reliability</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Bitcoin</strong></td>
+        <td>~7</td>
+        <td>10 min</td>
+        <td><span class="badge badge-green">PoW — Very High</span></td>
+        <td><span class="badge badge-green">Excellent</span></td>
+      </tr>
+      <tr>
+        <td><strong>Ethereum</strong></td>
+        <td>~15</td>
+        <td>~12s</td>
+        <td><span class="badge badge-purple">PoS — High</span></td>
+        <td><span class="badge badge-green">Good</span></td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>Kaspa</strong></td>
+        <td>~400 avg</td>
+        <td>&lt;1s</td>
+        <td><span class="badge badge-green">PoW — Very High</span></td>
+        <td><span class="badge badge-green">No downtime</span></td>
+      </tr>
+      <tr>
+        <td><strong>Solana</strong></td>
+        <td>~3,000</td>
+        <td>400ms</td>
+        <td><span class="badge badge-orange">PoS — Medium</span></td>
+        <td><span class="badge badge-orange">History of outages</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Solana is faster on paper. But it achieves that speed through Proof of Stake with heavy hardware requirements for validators, making it more centralized. It has also suffered multiple network outages including an 18-hour halt in 2023. Kaspa maintains Bitcoin's Proof of Work security model — the same mechanism that has run without a single second of downtime for 15 years — while achieving dramatically higher throughput.</p>
+
+  <div class="callout callout-orange">
+    <div class="callout-title">Kaspa's Honest Weakness</div>
+    <p>Ecosystem maturity. Ethereum has thousands of DeFi apps, smart contracts, and NFT platforms built on it. Kaspa's smart contract support is still in development — a major hardfork enabling native assets and laying groundwork for smart contracts was scheduled for May 2026. For now, Kaspa is primarily a high-performance payments and settlement layer.</p>
+  </div>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- SECTION 8 -->
+  <h2>Why This Matters</h2>
+
+  <p>The GHOSTDAG paper proves formally — with mathematical proof in its appendix — that GHOSTDAG's security threshold is bounded from below by 50% of hashrate, regardless of how high the block rate is set. This is the same security guarantee Bitcoin offers, at any throughput level.</p>
+
+  <p>Theorem 5 in the paper states plainly that <em>Nakamoto Consensus does not scale</em> — its security threshold goes to zero as block rate increases. Kaspa's Theorem 4 states the opposite: GHOSTDAG scales, and its security does not deteriorate with throughput.</p>
+
+  <p>Every other approach to blockchain scalability has been a tradeoff. Reduce decentralization. Weaken the security model. Move transactions off-chain. Accept periodic downtime. Kaspa is the first system to mathematically demonstrate that high throughput and proof-of-work security are not in conflict — they just require a different data structure.</p>
+
+  <p>Not a chain. A DAG.</p>
+
+  <div class="mono-block">
+<span class="dim">The tradeoff everyone accepted for 15 years:</span>
+
+  Speed          ←————→          Security
+  (pick one)
+
+<span class="hi">Kaspa's answer:</span>
+
+  Speed          <span class="hi">+</span>          Security
+  <span class="dim">(blockDAG + GHOSTDAG = both)</span>
+  </div>
+
+  <footer class="article-footer">
+    <span>Based on: PHANTOM GHOSTDAG — Sompolinsky, Wyborski & Zohar (2021)</span>
+    <span>ACM AFT '21 · doi:10.1145/3479722.3480990</span>
+  </footer>
+
+</div>
+</body>
+</html>
